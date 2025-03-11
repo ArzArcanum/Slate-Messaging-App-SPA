@@ -29,7 +29,7 @@ export default function Chat() {
     // If user exists and input field is not blank/whitespace
     if (user && newMessageContent.trim()) {
       // Construct user message
-      console.log(user);
+      // console.log(user);
       const newMessageDTO: Message = {
         id: messages.length + 1,
         userId: user.sub as string,
