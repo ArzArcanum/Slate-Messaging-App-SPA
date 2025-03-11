@@ -2,7 +2,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../../LogoutButton";
 import LoginButton from "../../LoginButton";
 
-export default function MainContent() {
+export default function Topbar() {
   const { isAuthenticated } = useAuth0();
 
   return (
