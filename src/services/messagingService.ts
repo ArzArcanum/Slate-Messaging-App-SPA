@@ -1,9 +1,6 @@
 import axios from "axios";
-interface Message {
-  id: number;
-  userId: string;
-  content: string;
-}
+import MessageDTO from "../interfaces/message";
+
 // Create an axios instance for reuse
 const api = axios.create({
   baseURL: "https://localhost:7073",
@@ -13,10 +10,10 @@ const api = axios.create({
 });
 
 // Placeholder implementation until WebSocket integration is complete
-export const sendMessage = async (message: Message) => {
+export const sendMessage = async (messageDTO: MessageDTO) => {
   // console.log("Sending message...")
   try {
-    await api.post("/messages", message);
+    await api.post("/messages", messageDTO);
     return;
     // Should I Return the API response?
   } catch (error) {
@@ -26,10 +23,10 @@ export const sendMessage = async (message: Message) => {
 };
 
 export const fetchMessages = async () => {
-  console.log("Fetching messages...")
+  console.log("Fetching messages...");
   try {
     const response = await api.get("/messages");
-    return response.data as Message[]; // Return API response
+    return response.data as MessageDTO[]; // Return API response
   } catch (error) {
     console.error("Error fetching messages:", error);
     throw error; // Re-throws the error to allow handling it in the calling component

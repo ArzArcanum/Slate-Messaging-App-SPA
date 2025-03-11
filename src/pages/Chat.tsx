@@ -3,12 +3,7 @@ import { Send } from "lucide-react";
 import { fetchMessages, sendMessage } from "../services/messagingService";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "../components/LoginButton";
-
-interface Message {
-  id: number;
-  userId: string;
-  content: string;
-}
+import Message from "../interfaces/message";
 
 export default function Chat() {
   const { user, isAuthenticated, isLoading } = useAuth0();
@@ -23,7 +18,7 @@ export default function Chat() {
       console.error("Failed to load messages:", error);
     }
   };
-  
+
   useEffect(() => {
     void loadMessages();
   }, []);
@@ -34,15 +29,15 @@ export default function Chat() {
     // If user exists and input field is not blank/whitespace
     if (user && newMessageContent.trim()) {
       // Construct user message
-      console.log(user)
-      const newMessage: Message = {
+      console.log(user);
+      const newMessageDTO: Message = {
         id: messages.length + 1,
         userId: user.sub as string,
         content: newMessageContent,
       };
 
       try {
-        await sendMessage(newMessage);
+        await sendMessage(newMessageDTO);
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
       } catch (error) {
