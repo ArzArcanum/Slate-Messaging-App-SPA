@@ -6,44 +6,45 @@ import LoginButton from "../components/LoginButton";
 
 interface Message {
   id: number;
-  userId: number;
+  userId: string;
   content: string;
 }
 
 export default function Chat() {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
   const [messages, setMessages] = useState<Message[]>([]); // Empty intial state of type Message[]
-  const [newMessage, setNewMessage] = useState<string>("");
+  const [newMessageContent, setNewMessageContent] = useState<string>("");
 
+  const loadMessages = async () => {
+    try {
+      const data = (await fetchMessages()) as Message[];
+      setMessages(data);
+    } catch (error) {
+      console.error("Failed to load messages:", error);
+    }
+  };
+  
   useEffect(() => {
-    const loadMessages = async () => {
-      try {
-        const data = (await fetchMessages()) as Message[];
-        setMessages(data);
-      } catch (error) {
-        console.error("Failed to load messages:", error);
-      }
-    };
     void loadMessages();
   }, []);
 
   // Placeholder implementation until WebSocket integration is complete
   const handleSendMessage = async () => {
     // console.log("handlingSendMessage...");
-    if (newMessage.trim()) {
-      // If the input field is not blank/whitespace
-      // Add user message
-      const newMessageObject = {
-        // Quotes are unecessary
+    // If user exists and input field is not blank/whitespace
+    if (user && newMessageContent.trim()) {
+      // Construct user message
+      console.log(user)
+      const newMessage: Message = {
         id: messages.length + 1,
-        content: newMessage,
-        userId: 1,
+        userId: user.sub as string,
+        content: newMessageContent,
       };
 
       try {
         await sendMessage(newMessage);
-        setMessages([...messages, newMessageObject]);
-        setNewMessage(""); // Clear the input after sending
+        void loadMessages();
+        setNewMessageContent(""); // Clear the input after sending
       } catch (error) {
         console.error("Failed to send message:", error);
       }
@@ -62,21 +63,21 @@ export default function Chat() {
 
   return (
     <>
-      {!isLoading && isAuthenticated ? (
+      {!isLoading && isAuthenticated && user ? (
         <div className="chatbox-container">
           <div className="chatbox-messages">
             {messages.map((message) => (
               <div
                 key={message.id}
                 className={`flex ${
-                  message.userId === 1 ? "justify-end" : "justify-start"
+                  message.userId === user.sub ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
                   className={`
                     max-w-[70%] p-3 rounded-b-lg
                     ${
-                      message.userId === 1
+                      message.userId === user.sub
                         ? "bg-blue-500 text-white rounded-l-lg"
                         : "bg-gray-200 text-black rounded-r-lg"
                     }
@@ -91,8 +92,8 @@ export default function Chat() {
           <div className="chatbox-input">
             <input
               type="text"
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              value={newMessageContent}
+              onChange={(e) => setNewMessageContent(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type a message..."
               className="flex-grow p-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

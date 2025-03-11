@@ -1,7 +1,7 @@
 import axios from "axios";
 interface Message {
   id: number;
-  userId: number;
+  userId: string;
   content: string;
 }
 // Create an axios instance for reuse
@@ -13,13 +13,9 @@ const api = axios.create({
 });
 
 // Placeholder implementation until WebSocket integration is complete
-export const sendMessage = async (content: string) => {
+export const sendMessage = async (message: Message) => {
   // console.log("Sending message...")
   try {
-    const message = {
-      UserId: 1, // Will be replaced with user authentication
-      Content: content,
-    };
     await api.post("/messages", message);
     return;
     // Should I Return the API response?
@@ -30,7 +26,7 @@ export const sendMessage = async (content: string) => {
 };
 
 export const fetchMessages = async () => {
-  // console.log("Fetching messages...")
+  console.log("Fetching messages...")
   try {
     const response = await api.get("/messages");
     return response.data as Message[]; // Return API response
