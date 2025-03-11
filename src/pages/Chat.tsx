@@ -43,14 +43,6 @@ export default function Chat() {
     }
   };
 
-  const handleKeyPress = (keyboardEvent: { key: string }) => {
-    // console.log("handleKeyPress...");
-    if (keyboardEvent.key === "Enter") {
-      // Send message if Enter is pressed
-      void handleSendMessage();
-    }
-  };
-
   // To-do: Implement sticky scroll feature
 
   return (
@@ -86,7 +78,7 @@ export default function Chat() {
               type="text"
               value={newMessageContent}
               onChange={(e) => setNewMessageContent(e.target.value)}
-              onKeyDown={handleKeyPress}
+              onKeyDown={(e) => e.key === "Enter" && void handleSendMessage()}
               placeholder="Type a message..."
               className="flex-grow p-2 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
