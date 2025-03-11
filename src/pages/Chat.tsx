@@ -28,16 +28,13 @@ export default function Chat() {
     // console.log("handlingSendMessage...");
     // If user exists and input field is not blank/whitespace
     if (user && newMessageContent.trim()) {
-      // Construct user message
       // console.log(user);
-      const newMessageDTO: Message = {
-        id: messages.length + 1,
-        userId: user.sub as string,
-        content: newMessageContent,
-      };
-
       try {
-        await sendMessage(newMessageDTO);
+        await sendMessage({
+          id: messages.length + 1,
+          userId: user.sub as string,
+          content: newMessageContent,
+        });
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
       } catch (error) {
