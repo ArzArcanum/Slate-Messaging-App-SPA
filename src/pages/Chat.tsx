@@ -11,7 +11,7 @@ interface Message {
 }
 
 export default function Chat() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
   const [messages, setMessages] = useState<Message[]>([]); // Empty intial state of type Message[]
   const [newMessage, setNewMessage] = useState<string>("");
 
@@ -62,7 +62,7 @@ export default function Chat() {
 
   return (
     <>
-      {isAuthenticated ? (
+      {!isLoading && isAuthenticated ? (
         <div className="chatbox-container">
           <div className="chatbox-messages">
             {messages.map((message) => (

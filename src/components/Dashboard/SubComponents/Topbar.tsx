@@ -3,7 +3,7 @@ import LogoutButton from "../../LogoutButton";
 import LoginButton from "../../LoginButton";
 
 export default function Topbar() {
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, isLoading } = useAuth0();
 
   return (
     <header className="topbar">
@@ -14,7 +14,7 @@ export default function Topbar() {
 
       {/* Topbar buttons */}
       <div className="flex items-center space-x-4">
-        {isAuthenticated ? (
+        {!isLoading && isAuthenticated ? (
           <>
             <LogoutButton />
             <div className="topbarButton">U</div>
