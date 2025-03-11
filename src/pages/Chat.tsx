@@ -12,7 +12,7 @@ export default function Chat() {
 
   const loadMessages = async () => {
     try {
-      const data = (await fetchMessages()) as Message[];
+      const data = await fetchMessages();
       setMessages(data);
     } catch (error) {
       console.error("Failed to load messages:", error);
