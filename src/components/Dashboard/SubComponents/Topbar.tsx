@@ -3,7 +3,17 @@ import LogoutButton from "../../LogoutButton";
 import LoginButton from "../../LoginButton";
 
 export default function Topbar() {
-  const { isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
+
+  if (isLoading) {
+    return (
+      <header className="topbar">
+        <div className="flex items-center">
+          <h2 className="text-lg font-medium">Placeholder text</h2>
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="topbar">
@@ -14,10 +24,19 @@ export default function Topbar() {
 
       {/* Topbar buttons */}
       <div className="flex items-center space-x-4">
-        {!isLoading && isAuthenticated ? (
+        {isAuthenticated ? (
           <>
             <LogoutButton />
-            <div className="topbarButton">U</div>
+            <div className="topbarButton" style={{ padding: "0.125rem" }}>
+              {user && (
+                <img
+                  src={user.picture}
+                  alt="User profile"
+                  style={{ height: "2rem", width: "2rem" }}
+                  className="rounded-full"
+                />
+              )}
+            </div>
           </>
         ) : (
           <>

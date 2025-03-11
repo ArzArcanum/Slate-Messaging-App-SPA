@@ -14,7 +14,7 @@ export default function LogoutButton() {
 
   return (
     <button className="topbarButton" onClick={handleLogout}>
-      <LogOut size={20} />
+      <LogOut style={{ height: "1.25rem", width: "1.25rem" }} />
     </button>
   );
 }
