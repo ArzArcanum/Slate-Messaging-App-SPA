@@ -23,7 +23,7 @@ export const sendMessage = async (messageDTO: MessageDTO) => {
 };
 
 export const fetchMessages = async () => {
-  console.log("Fetching messages...");
+  // console.log("Fetching messages...");
   try {
     const response = await api.get("/messages");
     return response.data as MessageDTO[]; // Return API response
