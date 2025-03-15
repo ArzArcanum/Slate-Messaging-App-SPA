@@ -6,13 +6,15 @@ import LoginButton from "../components/LoginButton";
 import Message from "../interfaces/message";
 
 export default function Chat() {
-  const { user, isAuthenticated, isLoading } = useAuth0();
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+    useAuth0();
   const [messages, setMessages] = useState<Message[]>([]); // Empty intial state of type Message[]
   const [newMessageContent, setNewMessageContent] = useState<string>("");
 
   const loadMessages = async () => {
     try {
-      const data = await fetchMessages();
+      const token = await getAccessTokenSilently();
+      const data = await fetchMessages(token);
       setMessages(data);
     } catch (error) {
       console.error("Failed to load messages:", error);
@@ -30,11 +32,15 @@ export default function Chat() {
     if (user && newMessageContent.trim()) {
       // console.log(user);
       try {
-        await sendMessage({
-          id: messages.length + 1,
-          userId: user.sub as string,
-          content: newMessageContent,
-        });
+        const token = await getAccessTokenSilently();
+        await sendMessage(
+          {
+            id: messages.length + 1,
+            userId: user.sub as string,
+            content: newMessageContent,
+          },
+          token
+        );
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
       } catch (error) {
