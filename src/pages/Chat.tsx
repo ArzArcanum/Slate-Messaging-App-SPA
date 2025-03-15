@@ -33,14 +33,7 @@ export default function Chat() {
       // console.log(user);
       try {
         const token = await getAccessTokenSilently();
-        await sendMessage(
-          {
-            id: messages.length + 1,
-            userId: user.sub as string,
-            content: newMessageContent,
-          },
-          token
-        );
+        await sendMessage(newMessageContent, token);
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
       } catch (error) {

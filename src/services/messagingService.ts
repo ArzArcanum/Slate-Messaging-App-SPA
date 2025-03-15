@@ -10,14 +10,18 @@ const api = axios.create({
 });
 
 // Placeholder implementation until WebSocket integration is complete
-export const sendMessage = async (messageDTO: MessageDTO, token: string) => {
+export const sendMessage = async (messageContent: string, token: string) => {
   // console.log("Sending message...")
   try {
-    await api.post("/messages", messageDTO, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    await api.post(
+      "/messages",
+      { content: messageContent },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return;
     // Should I Return the API response?
   } catch (error) {
