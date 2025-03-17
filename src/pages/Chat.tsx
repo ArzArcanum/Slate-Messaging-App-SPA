@@ -6,15 +6,29 @@ import LoginButton from "../components/LoginButton";
 import Message from "../interfaces/message";
 
 export default function Chat() {
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
-    useAuth0();
+  const {
+    user,
+    isAuthenticated,
+    isLoading,
+    getAccessTokenSilently,
+    getIdTokenClaims,
+  } = useAuth0();
   const [messages, setMessages] = useState<Message[]>([]); // Empty intial state of type Message[]
   const [newMessageContent, setNewMessageContent] = useState<string>("");
 
+  const getIdToken = async () => {
+    const claims = await getIdTokenClaims();
+    if (claims) {
+      return claims.__raw;
+    } else {
+      return "Error";
+    }
+  };
+
   const loadMessages = async () => {
     try {
-      const token = await getAccessTokenSilently();
-      const data = await fetchMessages(token);
+      const accessToken = await getAccessTokenSilently();
+      const data = await fetchMessages(accessToken);
       if (data !== null) {
         setMessages(data);
       }
@@ -34,8 +48,9 @@ export default function Chat() {
     if (user && newMessageContent.trim()) {
       // console.log(user);
       try {
-        const token = await getAccessTokenSilently();
-        await sendMessage(newMessageContent, token);
+        const accessToken = await getAccessTokenSilently();
+        const idToken = await getIdToken();
+        await sendMessage(newMessageContent, accessToken, idToken);
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
       } catch (error) {

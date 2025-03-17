@@ -10,7 +10,11 @@ const api = axios.create({
 });
 
 // Placeholder implementation until WebSocket integration is complete
-export const sendMessage = async (messageContent: string, token: string) => {
+export const sendMessage = async (
+  messageContent: string,
+  accessToken: string,
+  idToken: string
+) => {
   // console.log("Sending message...")
   try {
     await api.post(
@@ -18,7 +22,8 @@ export const sendMessage = async (messageContent: string, token: string) => {
       { content: messageContent },
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${accessToken}`,
+          "ID-Token": idToken,
         },
       }
     );
@@ -30,12 +35,12 @@ export const sendMessage = async (messageContent: string, token: string) => {
   }
 };
 
-export const fetchMessages = async (token: string) => {
+export const fetchMessages = async (accessToken: string) => {
   // console.log("Fetching messages...");
   try {
     const response = await api.get("/messages", {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
     return response.data as MessageDTO[]; // Return API response
