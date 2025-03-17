@@ -1,7 +1,7 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
-import Chat from "./pages/Chat";
+import ChatPage from "./pages/ChatPage";
 import Placeholder from "./pages/Placeholder";
 import NoPage from "./pages/NoPage";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -14,7 +14,7 @@ export default function App() {
       <Dashboard>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<ChatPage />} />
           <Route path="/about" element={<Placeholder />} />
           <Route path="/contact" element={<Placeholder />} />
           <Route path="/login" element={<Login />} />

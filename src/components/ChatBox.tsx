@@ -2,11 +2,10 @@ import { useEffect, useState } from "react";
 import { Send } from "lucide-react";
 import { fetchMessages, sendMessage } from "../services/messagingService";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from "../components/LoginButton";
 import Message from "../interfaces/message";
 import { Navigate } from "react-router-dom";
 
-export default function Chat() {
+export default function ChatBox() {
   const {
     user,
     isAuthenticated,
@@ -64,7 +63,7 @@ export default function Chat() {
 
   return (
     <>
-      {!isLoading && isAuthenticated && user ? (
+      {!isLoading && isAuthenticated && user && (
         <div className="chatbox-container">
           <div className="chatbox-messages">
             {messages.map((message, index) => {
@@ -120,8 +119,6 @@ export default function Chat() {
             </button>
           </div>
         </div>
-      ) : (
-        <Navigate to="/login" />
       )}
     </>
   );
