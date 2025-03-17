@@ -15,7 +15,9 @@ export default function Chat() {
     try {
       const token = await getAccessTokenSilently();
       const data = await fetchMessages(token);
-      setMessages(data);
+      if (data !== null) {
+        setMessages(data);
+      }
     } catch (error) {
       console.error("Failed to load messages:", error);
     }
@@ -53,14 +55,14 @@ export default function Chat() {
               <div
                 key={message.id}
                 className={`flex ${
-                  message.userId === user.sub ? "justify-end" : "justify-start"
+                  message.user.id === user.sub ? "justify-end" : "justify-start"
                 }`}
               >
                 <div
                   className={`
                     max-w-[70%] p-3 rounded-b-lg
                     ${
-                      message.userId === user.sub
+                      message.user.id === user.sub
                         ? "bg-blue-500 text-white rounded-l-lg"
                         : "bg-gray-200 text-black rounded-r-lg"
                     }

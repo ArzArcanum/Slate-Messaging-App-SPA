@@ -1,5 +1,9 @@
 export default interface Message {
   id: number;
-  userId: string;
   content: string;
+  createdAt: string;
+  user: {
+    id: string;
+    username: string;
+  };
 }
