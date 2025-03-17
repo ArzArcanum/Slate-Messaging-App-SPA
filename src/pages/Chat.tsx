@@ -4,6 +4,7 @@ import { fetchMessages, sendMessage } from "../services/messagingService";
 import { useAuth0 } from "@auth0/auth0-react";
 import LoginButton from "../components/LoginButton";
 import Message from "../interfaces/message";
+import { Navigate } from "react-router-dom";
 
 export default function Chat() {
   const {
@@ -120,9 +121,7 @@ export default function Chat() {
           </div>
         </div>
       ) : (
-        <div className="flex-grow">
-          <LoginButton />
-        </div>
+        <Navigate to="/login" />
       )}
     </>
   );

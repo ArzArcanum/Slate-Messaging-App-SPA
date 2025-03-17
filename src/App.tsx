@@ -5,6 +5,7 @@ import Chat from "./pages/Chat";
 import Placeholder from "./pages/Placeholder";
 import NoPage from "./pages/NoPage";
 import Dashboard from "./components/Dashboard/Dashboard";
+import Login from "./pages/Login";
 // Simplify imports?
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/about" element={<Placeholder />} />
           <Route path="/contact" element={<Placeholder />} />
+          <Route path="/login" element={<Login />} />
           <Route path="*" element={<NoPage />} />
         </Routes>
       </Dashboard>
