@@ -1,34 +1,35 @@
 import { useEffect, useState } from "react";
 import { Send } from "lucide-react";
 import { fetchMessages, sendMessage } from "../services/messagingService";
-import { useAuth0, User } from "@auth0/auth0-react";
+import { useAuth0 } from "@auth0/auth0-react";
 import Message from "../interfaces/message";
 
 interface ChildProps {
   message: Message;
-  prevMessage: Message | null;
-  user: User;
+  isFirstMessage: boolean;
+  isOwnMessage: boolean;
 }
 
-export function MessageContainer({ message, prevMessage, user }: ChildProps) {
-  const isSameUserAsPrevious =
-    prevMessage && prevMessage.user.id === message.user.id;
-  const isOwnMessage = message.user.id === user!.sub;
+export function MessageContainer({
+  message,
+  isFirstMessage,
+  isOwnMessage,
+}: ChildProps) {
   return (
     <div
       key={message.id}
       className={`flex flex-col ${isOwnMessage ? "items-end" : "items-start"}`}
     >
       {/* Show username only if it's a different user and not your own message */}
-      {!isSameUserAsPrevious && !isOwnMessage && (
-        <div className="text-sm font-semibold text-blue-500 mb-1">
+      {isFirstMessage && !isOwnMessage && (
+        <div className="text-sm font-semibold text-blue-500 mt-2 mb-0.5">
           {message.user.username}
         </div>
       )}
 
       <div
         className={`
-          max-w-[70%] p-3 rounded-b-lg
+          max-w-[70%] p-1 rounded-b-lg
           ${
             isOwnMessage
               ? "bg-blue-500 text-white rounded-l-lg"
@@ -105,11 +106,14 @@ export default function ChatBox() {
           <div className="chatbox-messages">
             {messages.map((message, index) => {
               const prevMessage = index > 0 ? messages[index - 1] : null;
+              const isFirstMessage = message.user.id !== prevMessage?.user.id;
+              const isOwnMessage = message.user.id === user!.sub;
+
               return (
                 <MessageContainer
                   message={message}
-                  prevMessage={prevMessage}
-                  user={user}
+                  isFirstMessage={isFirstMessage}
+                  isOwnMessage={isOwnMessage}
                 />
               );
             })}
