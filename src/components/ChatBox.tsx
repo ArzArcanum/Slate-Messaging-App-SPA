@@ -4,37 +4,28 @@ import { fetchMessages, sendMessage } from "../services/messagingService";
 import { useAuth0 } from "@auth0/auth0-react";
 import Message from "../interfaces/message";
 
-interface ChildProps {
-  message: Message;
-  isFirstMessage: boolean;
-  isOwnMessage: boolean;
-}
-
-export function MessageContainer({
+function MessageContainer({
   message,
   isFirstMessage,
   isOwnMessage,
-}: ChildProps) {
+}: {
+  message: Message;
+  isFirstMessage: boolean;
+  isOwnMessage: boolean;
+}) {
   return (
     <div
-      key={message.id}
       className={`flex flex-col ${isOwnMessage ? "items-end" : "items-start"}`}
     >
       {/* Show username only if it's a different user and not your own message */}
       {isFirstMessage && !isOwnMessage && (
-        <div className="text-sm font-semibold text-blue-500 mt-2 mb-0.5">
-          {message.user.username}
-        </div>
+        <div className="chatbox-message-username">{message.user.username}</div>
       )}
 
       <div
         className={`
-          max-w-[70%] p-1 rounded-b-lg
-          ${
-            isOwnMessage
-              ? "bg-blue-500 text-white rounded-l-lg"
-              : "bg-gray-200 text-black rounded-r-lg"
-          }
+          chatbox-message
+          ${isOwnMessage ? "chatbox-message-own" : "chatbox-message-other"}
           `}
       >
         {message.content}
@@ -51,17 +42,8 @@ export default function ChatBox() {
     getAccessTokenSilently,
     getIdTokenClaims,
   } = useAuth0();
-  const [messages, setMessages] = useState<Message[]>([]); // Empty intial state of type Message[]
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessageContent, setNewMessageContent] = useState<string>("");
-
-  const getIdToken = async () => {
-    const claims = await getIdTokenClaims();
-    if (claims) {
-      return claims.__raw;
-    } else {
-      return "Error";
-    }
-  };
 
   const loadMessages = async () => {
     try {
@@ -81,13 +63,15 @@ export default function ChatBox() {
 
   // Placeholder implementation until WebSocket integration is complete
   const handleSendMessage = async () => {
-    // console.log("handlingSendMessage...");
     // If user exists and input field is not blank/whitespace
     if (user && newMessageContent.trim()) {
-      // console.log(user);
       try {
         const accessToken = await getAccessTokenSilently();
-        const idToken = await getIdToken();
+        const claims = await getIdTokenClaims();
+        if (!claims) {
+          throw new Error("Failed to get ID token claims");
+        }
+        const idToken = claims.__raw;
         await sendMessage(newMessageContent, accessToken, idToken);
         void loadMessages();
         setNewMessageContent(""); // Clear the input after sending
@@ -106,11 +90,13 @@ export default function ChatBox() {
           <div className="chatbox-messages">
             {messages.map((message, index) => {
               const prevMessage = index > 0 ? messages[index - 1] : null;
-              const isFirstMessage = message.user.id !== prevMessage?.user.id;
+              const isFirstMessage =
+                !prevMessage || message.user.id !== prevMessage.user.id;
               const isOwnMessage = message.user.id === user!.sub;
 
               return (
                 <MessageContainer
+                  key={message.id}
                   message={message}
                   isFirstMessage={isFirstMessage}
                   isOwnMessage={isOwnMessage}
